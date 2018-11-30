@@ -4,12 +4,15 @@ RUN apt install curl
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
-RUN curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-155.0.0-linux-x86_64.tar.gz
+# Downloading gcloud package
+RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
 
-RUN tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/
+# Installing the package
+RUN mkdir -p /usr/local/gcloud \
+  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
+  && /usr/local/gcloud/google-cloud-sdk/install.sh
 
-RUN /tmp/google-cloud-sdk/install.sh -q
+# Adding the package path to local
+ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 RUN gcloud components install kubectl
-
-
